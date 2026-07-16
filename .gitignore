@@ -30,4 +30,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-\n# Next.js build output\n.next\n# Local environment files\n.env*\n
+
+# Next.js build output
+.next
+# Local environment files
+.env*
+
