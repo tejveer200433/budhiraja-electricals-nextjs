@@ -23,7 +23,7 @@ export function SitePageShell({ children }: { children: ReactNode }) {
         <div className="container-x flex h-20 items-center justify-between">
           <a href="/" className="flex items-center gap-2.5" aria-label="Budhiraja Electricals home">
             <span className="grid h-9 w-9 place-items-center rounded-md bg-[color:var(--color-brand)] text-white"><Zap className="h-5 w-5" /></span>
-            <span className="font-display text-[15px] font-bold leading-tight">BUDHIRAJA<br /><span className="text-[10px] font-semibold tracking-[0.28em] text-[color:var(--color-mute)]">ELECTRICALS · 1971</span></span>
+            <span className="font-display text-[15px] font-bold leading-tight">BUDHIRAJA<br /><span className="text-[10px] font-semibold tracking-[0.24em] text-[color:var(--color-mute)]">ELECTRICALS · SINCE 1971</span></span>
           </a>
           <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary navigation">
             {NAV.map(([label, href]) => <a key={href} href={href} className="text-[13px] font-semibold text-[color:var(--color-ink-2)] hover:text-[color:var(--color-brand)]">{label}</a>)}

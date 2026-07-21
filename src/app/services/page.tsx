@@ -154,6 +154,27 @@ const PROCESS = [
   ["05", "Support", "Maintenance and lifecycle assistance"],
 ];
 
+const SPECIALISED_SYSTEMS = [
+  {
+    icon: CircuitBoard,
+    title: "Intelligent Traffic & Toll Management",
+    text: "Integrated lane, highway-traffic and fleet-management systems designed for reliable operations and transparent revenue control.",
+    tags: ["Toll management", "HTMS", "Fleet systems"],
+  },
+  {
+    icon: Shield,
+    title: "ANPR, UVSS & Vehicle Security",
+    text: "Advanced vehicle identification, under-vehicle scanning and automated access solutions for high-security entrances.",
+    tags: ["ANPR", "UVSS", "Boom barriers"],
+  },
+  {
+    icon: LayoutGrid,
+    title: "E-Ticketing & Digital Information",
+    text: "Connected ticketing, information-display and queue-management systems for stadiums, public venues and transport facilities.",
+    tags: ["E-ticketing", "Smart displays", "Queue management"],
+  },
+];
+
 export default function ServicesPage() {
   return (
     <SitePageShell>
@@ -199,6 +220,28 @@ export default function ServicesPage() {
                 </article>
               );
             })}
+          </div>
+
+          <div className="mt-14 overflow-hidden rounded-[30px] bg-[color:var(--color-ink)] p-7 text-white sm:p-9 lg:p-10">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-2xl">
+                <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-[color:var(--color-accent-yellow)]">Houston Systems portfolio</div>
+                <h3 className="mt-3 font-display text-3xl font-bold tracking-tight">Specialised integrated systems.</h3>
+                <p className="mt-3 text-sm leading-relaxed text-white/60">Three focused technology capabilities for secure, connected and efficiently managed infrastructure.</p>
+              </div>
+              <a href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--color-accent-yellow)]">Discuss a system requirement <ArrowRight className="h-4 w-4" /></a>
+            </div>
+
+            <div className="mt-8 grid gap-4 lg:grid-cols-3">
+              {SPECIALISED_SYSTEMS.map(({ icon: SystemIcon, title, text, tags }) => (
+                <article key={title} className="rounded-2xl border border-white/10 bg-white/[0.05] p-6 transition-colors hover:border-white/25 hover:bg-white/[0.08]">
+                  <span className="grid h-11 w-11 place-items-center rounded-xl bg-[color:var(--color-accent-yellow)] text-[color:var(--color-ink)]"><SystemIcon className="h-5 w-5" /></span>
+                  <h4 className="mt-6 font-display text-lg font-bold leading-snug">{title}</h4>
+                  <p className="mt-3 text-sm leading-relaxed text-white/60">{text}</p>
+                  <div className="mt-5 flex flex-wrap gap-2">{tags.map((tag) => <span key={tag} className="rounded-full border border-white/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-white/60">{tag}</span>)}</div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>

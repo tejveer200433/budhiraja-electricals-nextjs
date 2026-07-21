@@ -848,7 +848,7 @@ function Footer() {
               </span>
               <span className="font-display text-[15px] font-bold tracking-tight leading-tight">
                 BUDHIRAJA<br />
-                <span className="text-[10px] tracking-[0.28em] text-white/60 font-semibold">ELECTRICALS · 1971</span>
+                <span className="text-[10px] tracking-[0.24em] text-white/60 font-semibold">ELECTRICALS · SINCE 1971</span>
               </span>
             </div>
             <p className="mt-6 max-w-sm text-sm text-white/60 leading-relaxed">
