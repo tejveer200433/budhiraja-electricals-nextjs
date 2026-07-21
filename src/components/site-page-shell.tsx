@@ -28,7 +28,7 @@ export function SitePageShell({ children }: { children: ReactNode }) {
           <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary navigation">
             {NAV.map(([label, href]) => <a key={href} href={href} className="text-[13px] font-semibold text-[color:var(--color-ink-2)] hover:text-[color:var(--color-brand)]">{label}</a>)}
           </nav>
-          <a href="/contact" className="btn-yellow hidden sm:inline-flex">Power Your Project</a>
+          <a href="/contact" className="btn-yellow hidden sm:inline-flex">Start Your Project</a>
           <button type="button" aria-label="Toggle menu" aria-expanded={open} aria-controls="page-mobile-menu" onClick={() => setOpen((value) => !value)} className="grid h-10 w-10 place-items-center rounded-full border border-line lg:hidden">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
