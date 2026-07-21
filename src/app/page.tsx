@@ -131,6 +131,21 @@ const BLOG = [
   { img: blog3, tag: "Infrastructure", title: "The Smart City Backbone Is Built on Reliable Power", read: "5 min read" },
 ];
 
+const SERVICE_BACKGROUNDS = [
+  pSubstation,
+  pInfra,
+  pIndustrial,
+  pStadium,
+  pGov,
+  pCommercial,
+  pIndustrial,
+  pSubstation,
+  pCommercial,
+  pGov,
+  pInfra,
+  aboutImg,
+];
+
 // ---------- components ----------
 function Navbar() {
   const scrolled = useScrolled(30);
@@ -148,7 +163,7 @@ function Navbar() {
           </span>
           <span className="font-display text-[15px] font-bold tracking-tight leading-tight">
             BUDHIRAJA<br />
-            <span className="text-[10px] tracking-[0.28em] text-[color:var(--color-mute)] font-semibold">ELECTRICALS · 1971</span>
+            <span className="text-[10px] tracking-[0.28em] text-[color:var(--color-mute)] font-semibold">ELECTRICALS · SINCE 1971</span>
           </span>
         </a>
 
@@ -161,9 +176,16 @@ function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link href="/contact" className="hidden sm:inline-flex btn-yellow">
-            Get a Quote <ArrowUpRight className="h-4 w-4" />
-          </Link>
+          <div
+            aria-label="More than 50 years of legacy"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-amber-300/80 bg-gradient-to-r from-amber-100 to-yellow-50 px-3 text-amber-950 shadow-[0_8px_24px_-14px_rgb(245_158_11_/_0.9)] sm:px-4"
+          >
+            <Award className="h-4 w-4 shrink-0 text-amber-600" strokeWidth={2.3} />
+            <span className="font-display text-[10px] font-bold tracking-[0.08em] sm:text-[11px]">
+              <span className="sm:hidden">50+ YEARS</span>
+              <span className="hidden sm:inline">50+ YEARS OF LEGACY</span>
+            </span>
+          </div>
           <button
             aria-label="Toggle menu"
             className="lg:hidden grid h-10 w-10 place-items-center rounded-full border border-line"
@@ -317,7 +339,7 @@ function About() {
             <img src={aboutImg} alt="Engineering team reviewing plans" width={1400} height={1600} loading="lazy" className="h-full w-full object-cover transition-transform duration-[1200ms] hover:scale-105" />
           </div>
           <div className="absolute -bottom-8 -right-4 md:right-8 rounded-2xl bg-[color:var(--color-brand)] text-white p-6 shadow-[var(--shadow-soft)] max-w-[240px]">
-            <div className="font-display text-5xl font-bold leading-none">54</div>
+            <div className="font-display text-5xl font-bold leading-none">50+</div>
             <div className="mt-2 text-xs uppercase tracking-[0.18em] font-semibold opacity-80">Years of engineering excellence</div>
           </div>
         </div>
@@ -378,30 +400,43 @@ function Services() {
             return (
               <div
                 key={s.title}
-                className="group relative bg-white p-7 md:p-8 transition-colors duration-300 hover:bg-[color:var(--color-ink)] hover:text-white"
+                className="group relative min-h-[330px] overflow-hidden bg-[color:var(--color-ink)] p-7 text-white md:p-8"
                 style={{
                   gridColumn: "span 1",
                 }}
               >
-                <div className="flex items-start justify-between">
-                  <div className="grid h-14 w-14 place-items-center rounded-2xl bg-[color:var(--color-brand-50)] text-[color:var(--color-brand)] transition-colors group-hover:bg-[color:var(--color-accent-yellow)] group-hover:text-[color:var(--color-ink)]">
-                    <Icon className="h-6 w-6" strokeWidth={2} />
+                <img
+                  src={SERVICE_BACKGROUNDS[i]}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover opacity-55 transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/60 to-black/90 transition-colors duration-300 group-hover:from-black/25 group-hover:via-black/55" />
+
+                <div className="relative z-10 flex h-full min-h-[274px] flex-col">
+                  <div className="flex items-start justify-between">
+                    <div className="grid h-14 w-14 place-items-center rounded-2xl border border-white/20 bg-white/15 text-white backdrop-blur-md transition-colors group-hover:border-[color:var(--color-accent-yellow)] group-hover:bg-[color:var(--color-accent-yellow)] group-hover:text-[color:var(--color-ink)]">
+                      <Icon className="h-6 w-6" strokeWidth={2} />
+                    </div>
+                    <span className="font-display text-xs font-bold text-white/60">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                   </div>
-                  <span className="font-display text-xs font-bold text-[color:var(--color-mute)] group-hover:text-white/50">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+                  <div className="mt-auto pt-10">
+                    <h3 className="font-display text-2xl font-bold tracking-tight text-white">{s.title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-white/75">
+                      {s.desc}
+                    </p>
+                    <Link
+                      href={`/services/${s.slug}`}
+                      className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--color-accent-yellow)]"
+                    >
+                      Read More
+                      <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5" />
+                    </Link>
+                  </div>
                 </div>
-                <h3 className="mt-8 font-display text-xl font-bold tracking-tight">{s.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[color:var(--color-mute)] group-hover:text-white/70">
-                  {s.desc}
-                </p>
-                <Link
-                  href={`/services/${s.slug}`}
-                  className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--color-brand)] transition-colors hover:text-[color:var(--color-brand-600)]"
-                >
-                  Read More
-                  <ChevronDown className="h-3.5 w-3.5 transition-transform" />
-                </Link>
               </div>
             );
           })}
@@ -549,13 +584,33 @@ function Clients() {
           Trusted by leading government, industrial & commercial clients
         </div>
       </div>
-      <div className="relative">
-        <div className="flex w-max animate-[marquee_45s_linear_infinite] gap-14 px-8">
-          {row.map((client, index) => (
-            <div key={index} className="font-display text-2xl md:text-3xl font-bold tracking-tight text-[color:var(--color-mute)]/70 hover:text-[color:var(--color-ink)] transition-colors whitespace-nowrap">
-              {client.name}
-            </div>
-          ))}
+      <div className="relative py-3">
+        <div className="flex w-max animate-[marquee_45s_linear_infinite] gap-5 px-8 hover:[animation-play-state:paused]">
+          {row.map((client, index) => {
+            const monogram = client.name.length <= 5
+              ? client.name
+              : client.name.split(/\s+/).map((word) => word[0]).slice(0, 2).join("");
+
+            return (
+              <div
+                key={`${client.name}-${index}`}
+                aria-hidden={index >= CLIENTS.length}
+                className="group flex min-w-[210px] items-center gap-4 rounded-2xl border border-line bg-white px-5 py-4 shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[var(--shadow-soft)]"
+              >
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[color:var(--color-brand-50)] font-display text-xs font-bold tracking-tight text-[color:var(--color-brand)] transition-colors group-hover:bg-[color:var(--color-brand)] group-hover:text-white">
+                  {monogram}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-[color:var(--color-mute)]">
+                    Trusted Partner
+                  </div>
+                  <div className="mt-1 whitespace-nowrap font-display text-lg font-bold tracking-tight text-[color:var(--color-ink)]">
+                    {client.name}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
         <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
@@ -837,8 +892,13 @@ export default function Landing() {
       <Navbar />
       <main>
         <Hero />
+        <About />
+        <Services />
+        <Projects />
         <WhyUs />
         <Clients />
+        <Testimonials />
+        <Blog />
       </main>
       <Footer />
       <Toaster position="bottom-right" richColors />
