@@ -34,6 +34,7 @@ const infrastructureImg = "/images/project-infrastructure.jpg";
 const stadiumImg = "/images/project-stadium.jpg";
 const substationImg = "/images/project-substation.jpg";
 import { SitePageShell } from "@/components/site-page-shell";
+import { TrackedLink } from "@/components/tracked-link";
 
 const SERVICES = [
   {
@@ -215,7 +216,7 @@ export default function ServicesPage() {
                     <h3 className="mt-2 font-display text-2xl font-bold">{service.title}</h3>
                     <p className="mt-3 text-sm leading-relaxed text-white/70">{service.summary}</p>
                     <ul className="mt-auto space-y-2 border-t border-white/15 pt-5">{service.points.map((point) => <li key={point} className="flex items-start gap-2 text-xs font-semibold text-white/80"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--color-accent-yellow)]" />{point}</li>)}</ul>
-                    <a href="/contact" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--color-accent-yellow)]">Request consultation <ArrowUpRight className="h-4 w-4" /></a>
+                    <TrackedLink href="/contact" eventName="service_interest" eventParams={{ service: service.title, location: "services_page" }} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--color-accent-yellow)]">Request consultation <ArrowUpRight className="h-4 w-4" /></TrackedLink>
                   </div>
                 </article>
               );
@@ -229,7 +230,7 @@ export default function ServicesPage() {
                 <h3 className="mt-3 font-display text-3xl font-bold tracking-tight">Specialised integrated systems.</h3>
                 <p className="mt-3 text-sm leading-relaxed text-white/60">Three focused technology capabilities for secure, connected and efficiently managed infrastructure.</p>
               </div>
-              <a href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--color-accent-yellow)]">Discuss a system requirement <ArrowRight className="h-4 w-4" /></a>
+              <TrackedLink href="/contact" eventName="service_interest" eventParams={{ service: "Houston Systems portfolio", location: "services_page" }} className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--color-accent-yellow)]">Discuss a system requirement <ArrowRight className="h-4 w-4" /></TrackedLink>
             </div>
 
             <div className="mt-8 grid gap-4 lg:grid-cols-3">
@@ -256,7 +257,7 @@ export default function ServicesPage() {
               <div className="mt-8 rounded-3xl bg-[color:var(--color-ink)] p-7 text-white shadow-[var(--shadow-soft)]">
                 <ShieldCheck className="h-8 w-8 text-[color:var(--color-accent-yellow)]" />
                 <p className="mt-6 font-display text-2xl font-bold leading-snug">One responsible team across engineering, procurement, installation and commissioning.</p>
-                <a href="/Budhiraja-Electricals-Company-Profile.pdf" download className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--color-accent-yellow)]">Download company profile <Download className="h-4 w-4" /></a>
+                <TrackedLink href="/Budhiraja-Electricals-Company-Profile.pdf" download eventName="profile_download" eventParams={{ location: "services_page" }} className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--color-accent-yellow)]">Download company profile <Download className="h-4 w-4" /></TrackedLink>
               </div>
             </div>
 
@@ -281,7 +282,7 @@ export default function ServicesPage() {
 
           <div className="mt-10 flex flex-col gap-5 rounded-3xl border border-[color:var(--color-brand)]/15 bg-[color:var(--color-brand-50)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
             <div><div className="font-display text-xl font-bold">Want to verify technical fit before requesting a quote?</div><p className="mt-2 text-sm text-[color:var(--color-mute)]">Share your scope, drawings or project stage directly with our team.</p></div>
-            <a href="/contact" className="btn-primary shrink-0">Speak with the project team <ArrowRight className="h-4 w-4" /></a>
+            <TrackedLink href="/contact" eventName="start_project_click" eventParams={{ location: "services_page" }} className="btn-primary shrink-0">Speak with the project team <ArrowRight className="h-4 w-4" /></TrackedLink>
           </div>
         </div>
       </section>

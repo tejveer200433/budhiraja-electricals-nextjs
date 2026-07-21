@@ -1,14 +1,14 @@
 "use client";
 
-/* eslint-disable @next/next/no-html-link-for-pages */
-
 import Link from "next/link";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  ArrowUpRight, ArrowRight, Zap, Menu, X, Phone, Mail,
-  MapPin, Star, ChevronLeft, ChevronRight, ChevronDown, Quote, Award, Users, Globe, Activity,
+  ArrowUpRight, ArrowRight, Zap, X,
+  Star, ChevronLeft, ChevronRight, ChevronDown, Quote, Award, Users, Globe, Activity,
 } from "lucide-react";
-import { toast, Toaster } from "sonner";
+import { Toaster } from "sonner";
+import { SiteFooter, SiteHeader } from "@/components/site-page-shell";
+import { trackEvent } from "@/lib/analytics";
 import { SERVICES as SERVICE_DATA } from "@/lib/services";
 
 const heroImg = "/images/hero-substation.jpg";
@@ -24,17 +24,6 @@ const blog2 = "/images/blog-2.jpg";
 const blog3 = "/images/blog-3.jpg";
 
 // ---------- helpers ----------
-function useScrolled(threshold = 40) {
-  const [s, setS] = useState(false);
-  useEffect(() => {
-    const on = () => setS(window.scrollY > threshold);
-    on();
-    window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, [threshold]);
-  return s;
-}
-
 function useReveal<T extends HTMLElement>() {
   const ref = useRef<T | null>(null);
   useEffect(() => {
@@ -80,15 +69,6 @@ function Counter({ to, suffix = "", duration = 1800 }: { to: number; suffix?: st
 }
 
 // ---------- data ----------
-const NAV = [
-  { label: "About", href: "/about" },
-  { label: "Services", href: "/services" },
-  { label: "Projects", href: "/projects" },
-  { label: "Blog", href: "/blog" },
-  { label: "Testimonials", href: "/testimonials" },
-  { label: "Contact", href: "/contact" },
-];
-
 const SERVICES = SERVICE_DATA;
 
 const PROJECTS = [
@@ -147,70 +127,6 @@ const SERVICE_BACKGROUNDS = [
 ];
 
 // ---------- components ----------
-function Navbar() {
-  const scrolled = useScrolled(30);
-  const [open, setOpen] = useState(false);
-  return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/85 backdrop-blur-xl border-b border-line shadow-[0_1px_0_rgb(0_0_0_/_0.04)]" : "bg-transparent"
-      }`}
-    >
-      <div className="container-x flex h-20 items-center justify-between">
-        <a href="/" className="flex items-center gap-2.5">
-          <span className="grid h-9 w-9 place-items-center rounded-md bg-[color:var(--color-brand)] text-white">
-            <Zap className="h-5 w-5" strokeWidth={2.5} />
-          </span>
-          <span className="font-display text-[15px] font-bold tracking-tight leading-tight">
-            BUDHIRAJA<br />
-            <span className="text-[10px] tracking-[0.28em] text-[color:var(--color-mute)] font-semibold">ELECTRICALS · SINCE 1971</span>
-          </span>
-        </a>
-
-        <nav className="hidden lg:flex items-center gap-8">
-          {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className="text-[13px] font-semibold text-[color:var(--color-ink-2)] hover:text-[color:var(--color-brand)] transition-colors">
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <div
-            aria-label="More than 50 years of legacy"
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-amber-300/80 bg-gradient-to-r from-amber-100 to-yellow-50 px-3 text-amber-950 shadow-[0_8px_24px_-14px_rgb(245_158_11_/_0.9)] sm:px-4"
-          >
-            <Award className="h-4 w-4 shrink-0 text-amber-600" strokeWidth={2.3} />
-            <span className="font-display text-[10px] font-bold tracking-[0.08em] sm:text-[11px]">
-              <span className="sm:hidden">50+ YEARS</span>
-              <span className="hidden sm:inline">50+ YEARS OF LEGACY</span>
-            </span>
-          </div>
-          <button
-            aria-label="Toggle menu"
-            className="lg:hidden grid h-10 w-10 place-items-center rounded-full border border-line"
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </div>
-
-      {open && (
-        <div className="lg:hidden border-t border-line bg-white">
-          <div className="container-x flex flex-col py-4">
-            {NAV.map((n) => (
-              <Link key={n.href} href={n.href} onClick={() => setOpen(false)} className="py-3 text-sm font-semibold border-b border-line last:border-0">
-                {n.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-    </header>
-  );
-}
-
 function Hero() {
   return (
     <section id="top" className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-40">
@@ -381,65 +297,47 @@ function Services() {
   return (
     <section id="services" className="py-24 md:py-32">
       <div className="container-x">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-14">
+        <div className="mb-14 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <div className="eyebrow mb-5">Capabilities</div>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.03em]">
-              Twelve disciplines.<br />One engineering standard.
+            <h2 className="font-display text-4xl font-bold tracking-[-0.03em] md:text-5xl lg:text-6xl">
+              Six core capabilities.<br />One engineering standard.
             </h2>
           </div>
           <p className="max-w-md text-[color:var(--color-mute)]">
-            From 66 kV substations to landscape lighting — we own the full electrical
-            stack, so nothing falls between vendors.
+            From 66 kV substations to integrated infrastructure, these are the capabilities clients request most often.
           </p>
         </div>
 
-        <div className="grid gap-px bg-line rounded-3xl overflow-hidden border border-line">
-          {SERVICES.map((s, i) => {
-            const Icon = s.icon;
+        <div className="grid gap-px overflow-hidden rounded-3xl border border-line bg-line">
+          {SERVICES.slice(0, 6).map((service, index) => {
+            const Icon = service.icon;
             return (
-              <div
-                key={s.title}
-                className="group relative min-h-[330px] overflow-hidden bg-[color:var(--color-ink)] p-7 text-white md:p-8"
-                style={{
-                  gridColumn: "span 1",
-                }}
-              >
-                <img
-                  src={SERVICE_BACKGROUNDS[i]}
-                  alt=""
-                  aria-hidden="true"
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover opacity-55 transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/60 to-black/90 transition-colors duration-300 group-hover:from-black/25 group-hover:via-black/55" />
-
-                <div className="relative z-10 flex h-full min-h-[274px] flex-col">
+              <article key={service.title} className="group relative min-h-[300px] overflow-hidden bg-[color:var(--color-ink)] p-7 text-white">
+                <img src={SERVICE_BACKGROUNDS[index]} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-55 transition-transform duration-700 ease-out group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/60 to-black/90" />
+                <div className="relative z-10 flex min-h-[244px] flex-col">
                   <div className="flex items-start justify-between">
-                    <div className="grid h-14 w-14 place-items-center rounded-2xl border border-white/20 bg-white/15 text-white backdrop-blur-md transition-colors group-hover:border-[color:var(--color-accent-yellow)] group-hover:bg-[color:var(--color-accent-yellow)] group-hover:text-[color:var(--color-ink)]">
-                      <Icon className="h-6 w-6" strokeWidth={2} />
-                    </div>
-                    <span className="font-display text-xs font-bold text-white/60">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
+                    <span className="grid h-12 w-12 place-items-center rounded-xl border border-white/20 bg-white/15 text-white backdrop-blur-md transition-colors group-hover:bg-[color:var(--color-accent-yellow)] group-hover:text-[color:var(--color-ink)]"><Icon className="h-5 w-5" /></span>
+                    <span className="font-display text-xs font-bold text-white/60">{String(index + 1).padStart(2, "0")}</span>
                   </div>
-                  <div className="mt-auto pt-10">
-                    <h3 className="font-display text-2xl font-bold tracking-tight text-white">{s.title}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-white/75">
-                      {s.desc}
-                    </p>
-                    <Link
-                      href={`/services/${s.slug}`}
-                      className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--color-accent-yellow)]"
-                    >
-                      Read More
-                      <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5" />
+                  <div className="mt-auto pt-8">
+                    <h3 className="font-display text-xl font-bold tracking-tight">{service.title}</h3>
+                    <p className="mt-2 text-[13px] leading-relaxed text-white/75">{service.desc}</p>
+                    <Link href={`/services/${service.slug}`} onClick={() => trackEvent("service_interest", { service_slug: service.slug, location: "homepage" })} className="mt-5 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-accent-yellow)]">
+                      Read More <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5" />
                     </Link>
                   </div>
                 </div>
-              </div>
+              </article>
             );
           })}
+        </div>
+
+        <div className="mt-9 text-center">
+          <Link href="/services" onClick={() => trackEvent("service_interest", { interaction: "view_all", location: "homepage" })} className="btn-primary">
+            View All 12 Services <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
 
@@ -447,7 +345,6 @@ function Services() {
         #services .grid.gap-px { grid-template-columns: repeat(1, minmax(0, 1fr)); }
         @media (min-width: 640px) { #services .grid.gap-px { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (min-width: 1024px) { #services .grid.gap-px { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-        @media (min-width: 1280px) { #services .grid.gap-px { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
       `}</style>
     </section>
   );
@@ -456,68 +353,54 @@ function Services() {
 function Projects() {
   const [open, setOpen] = useState<null | typeof PROJECTS[number]>(null);
   return (
-    <section id="projects" className="py-24 md:py-32 bg-[color:var(--color-surface-alt)]">
+    <section id="projects" className="bg-[color:var(--color-surface-alt)] py-24 md:py-32">
       <div className="container-x">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-14">
+        <div className="mb-14 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="eyebrow mb-5">Selected Work</div>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.03em]">
-              Projects that power<br />the country.
-            </h2>
+            <h2 className="font-display text-4xl font-bold tracking-[-0.03em] md:text-5xl lg:text-6xl">Projects that power<br />the country.</h2>
           </div>
           <div className="flex flex-wrap gap-2">
-            {["Substations", "Industrial", "Stadiums", "Commercial", "Infrastructure", "Government"].map((t) => (
-              <span key={t} className="text-xs font-semibold uppercase tracking-[0.14em] rounded-full border border-line bg-white px-3 py-1.5">{t}</span>
-            ))}
+            {["Substations", "Industrial", "Stadiums", "Commercial", "Infrastructure", "Government"].map((tag) => <span key={tag} className="rounded-full border border-line bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em]">{tag}</span>)}
           </div>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[260px]">
-          {PROJECTS.map((p) => (
+        <div className="grid auto-rows-[260px] gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {PROJECTS.map((project) => (
             <button
-              key={p.title}
-              onClick={() => setOpen(p)}
-              className={`group relative overflow-hidden rounded-3xl text-left bg-black card-lift ${p.span}`}
+              key={project.title}
+              onClick={() => {
+                trackEvent("project_view", { project_title: project.title, location: "homepage" });
+                setOpen(project);
+              }}
+              className={`group relative overflow-hidden rounded-3xl bg-black text-left card-lift ${project.span}`}
             >
-              <img src={p.img} alt={p.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-85 transition-transform duration-[900ms] group-hover:scale-110" />
+              <img src={project.img} alt={project.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-85 transition-transform duration-[900ms] group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
               <div className="relative flex h-full flex-col justify-end p-6 text-white">
-                <span className="inline-flex w-fit text-[10px] font-bold tracking-[0.22em] uppercase rounded-full bg-white/15 backdrop-blur px-2.5 py-1 border border-white/20">
-                  {p.tag}
-                </span>
-                <h3 className="mt-3 font-display text-xl md:text-2xl font-bold leading-tight max-w-[90%]">
-                  {p.title}
-                </h3>
-                <div className="mt-2 text-xs text-white/70">{p.location} · {p.year}</div>
+                <span className="inline-flex w-fit rounded-full border border-white/20 bg-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.22em] backdrop-blur">{project.tag}</span>
+                <h3 className="mt-3 max-w-[90%] font-display text-xl font-bold leading-tight md:text-2xl">{project.title}</h3>
+                <div className="mt-2 text-xs text-white/70">{project.location} · {project.year}</div>
               </div>
-              <div className="absolute top-5 right-5 grid h-11 w-11 place-items-center rounded-full bg-white/10 backdrop-blur border border-white/20 text-white transition-transform group-hover:rotate-45">
-                <ArrowUpRight className="h-4 w-4" />
-              </div>
+              <div className="absolute right-5 top-5 grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur transition-transform group-hover:rotate-45"><ArrowUpRight className="h-4 w-4" /></div>
             </button>
           ))}
         </div>
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in" onClick={() => setOpen(null)}>
-          <div onClick={(e) => e.stopPropagation()} className="relative max-w-3xl w-full overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <button onClick={() => setOpen(null)} className="absolute top-4 right-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-white/90 border border-line">
-              <X className="h-5 w-5" />
-            </button>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-in fade-in" onClick={() => setOpen(null)}>
+          <div onClick={(event) => event.stopPropagation()} className="relative w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+            <button onClick={() => setOpen(null)} aria-label="Close project details" className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full border border-line bg-white/90"><X className="h-5 w-5" /></button>
             <img src={open.img} alt={open.title} className="h-72 w-full object-cover" />
             <div className="p-8">
               <span className="eyebrow">{open.tag}</span>
               <h3 className="mt-3 font-display text-3xl font-bold tracking-tight">{open.title}</h3>
               <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-                {[
-                  ["Location", open.location],
-                  ["Client", open.client],
-                  ["Services", open.services],
-                  ["Completion", open.year],
-                ].map(([k, v]) => (
-                  <div key={k} className="rounded-xl bg-[color:var(--color-surface-alt)] p-4">
-                    <dt className="text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--color-mute)]">{k}</dt>
-                    <dd className="mt-1 font-semibold text-sm">{v}</dd>
+                {[["Location", open.location], ["Client", open.client], ["Services", open.services], ["Completion", open.year]].map(([key, value]) => (
+                  <div key={key} className="rounded-xl bg-[color:var(--color-surface-alt)] p-4">
+                    <dt className="text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--color-mute)]">{key}</dt>
+                    <dd className="mt-1 text-sm font-semibold">{value}</dd>
                   </div>
                 ))}
               </dl>
@@ -711,185 +594,10 @@ function Blog() {
   );
 }
 
-function Contact() {
-  const [submitting, setSubmitting] = useState(false);
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const fd = new FormData(form);
-    const payload = {
-      name: String(fd.get("name") ?? "").trim(),
-      email: String(fd.get("email") ?? "").trim(),
-      phone: String(fd.get("phone") ?? "").trim() || null,
-      company: String(fd.get("company") ?? "").trim() || null,
-      message: String(fd.get("message") ?? "").trim(),
-    };
-    if (!payload.name || !payload.email || !payload.message) {
-      toast.error("Please fill in your name, email and message.");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) {
-        const errorBody = await response.json().catch(() => null);
-        throw new Error(errorBody?.error || "Unable to send message.");
-      }
-      toast.success("Message sent successfully. We will be in touch soon.");
-      form.reset();
-    } catch (err) {
-      console.error("Contact submission failed", err);
-      const message = err instanceof Error ? err.message : "Unable to send message. Please try again later.";
-      toast.error(message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-  return (
-    <section id="contact" className="py-24 md:py-32 bg-[color:var(--color-surface-alt)]">
-      <div className="container-x grid gap-14 lg:grid-cols-2 lg:gap-20">
-        <div>
-          <div className="eyebrow mb-5">Get In Touch</div>
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-[-0.03em]">
-            Let's engineer<br />your next project.
-          </h2>
-          <p className="mt-6 text-[color:var(--color-mute)] max-w-md">
-            Share your project brief. A senior engineer will respond within one business day.
-          </p>
-
-          <ul className="mt-10 space-y-5">
-            {[
-              { i: Phone, k: "Call Us", v: "+91 11 4567 8901" },
-              { i: Mail, k: "Email", v: "tejveer.singh_cs22@gla.ac.in" },
-              { i: MapPin, k: "Head Office", v: "B-84, Okhla Industrial Estate, Phase II, New Delhi 110020" },
-            ].map((c) => {
-              const I = c.i;
-              return (
-                <li key={c.k} className="flex items-start gap-4">
-                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white border border-line text-[color:var(--color-brand)]">
-                    <I className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-[color:var(--color-mute)]">{c.k}</div>
-                    <div className="font-display font-bold text-lg">{c.v}</div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div className="relative mt-10 overflow-hidden rounded-2xl border border-line">
-            <iframe
-              title="Office location"
-              src="https://www.google.com/maps?q=B-84+Okhla+Industrial+Estate+Phase+II+New+Delhi+110020&output=embed"
-              className="h-64 w-full pointer-events-none"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-            <a
-              href="https://www.google.com/maps/dir/?api=1&destination=B-84+Okhla+Industrial+Estate+Phase+II+New+Delhi+110020"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="absolute inset-0 z-10"
-            />
-          </div>
-        </div>
-
-        <form onSubmit={onSubmit} className="rounded-3xl bg-white border border-line p-8 md:p-10 shadow-[var(--shadow-card)] h-fit">
-          <div className="grid gap-5 sm:grid-cols-2">
-            {[
-              { n: "name", l: "Name", t: "text", req: true },
-              { n: "email", l: "Email", t: "email", req: true },
-              { n: "phone", l: "Phone", t: "tel", req: false },
-              { n: "company", l: "Company", t: "text", req: false },
-            ].map((f) => (
-              <label key={f.n} className="block">
-                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[color:var(--color-mute)]">{f.l}</span>
-                <input
-                  required={f.req}
-                  name={f.n}
-                  type={f.t}
-                  className="mt-2 block w-full border-0 border-b border-line bg-transparent py-3 text-[15px] focus:border-[color:var(--color-brand)] focus:ring-0 focus:outline-none transition-colors"
-                />
-              </label>
-            ))}
-          </div>
-          <label className="mt-6 block">
-            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[color:var(--color-mute)]">Message</span>
-            <textarea
-              required
-              name="message"
-              rows={4}
-              className="mt-2 block w-full border-0 border-b border-line bg-transparent py-3 text-[15px] focus:border-[color:var(--color-brand)] focus:ring-0 focus:outline-none transition-colors resize-none"
-            />
-          </label>
-          <button type="submit" disabled={submitting} className="mt-8 btn-primary w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed">
-            {submitting ? "Sending…" : (<>Send Message <ArrowUpRight className="h-4 w-4" /></>)}
-          </button>
-        </form>
-      </div>
-    </section>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="bg-[color:var(--color-ink)] text-white pt-20 pb-8">
-      <div className="container-x">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-md bg-[color:var(--color-accent-yellow)] text-[color:var(--color-ink)]">
-                <Zap className="h-5 w-5" strokeWidth={2.5} />
-              </span>
-              <span className="font-display text-[15px] font-bold tracking-tight leading-tight">
-                BUDHIRAJA<br />
-                <span className="text-[10px] tracking-[0.24em] text-white/60 font-semibold">ELECTRICALS · SINCE 1971</span>
-              </span>
-            </div>
-            <p className="mt-6 max-w-sm text-sm text-white/60 leading-relaxed">
-              Class-I Electrical Contractor delivering turnkey electrical engineering
-              and smart infrastructure across India since 1971.
-            </p>
-          </div>
-
-          {[
-            { h: "Company", l: [["About", "/about"], ["Projects", "/projects"], ["Blog", "/blog"], ["Contact", "/contact"]] },
-            { h: "Services", l: [["Substations", "/services"], ["Distribution", "/services"], ["Stadium Lighting", "/services"], ["Automation", "/services"]] },
-            { h: "Connect", l: [["LinkedIn", "#"], ["Twitter", "#"], ["Instagram", "#"], ["YouTube", "#"]] },
-          ].map((col) => (
-            <div key={col.h}>
-              <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/50">{col.h}</div>
-              <ul className="mt-5 space-y-3">
-                {col.l.map(([label, href]) => (
-                  <li key={label}><a href={href} className="text-sm text-white/85 hover:text-[color:var(--color-accent-yellow)] transition-colors">{label}</a></li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-16 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/50">
-          <div>© {new Date().getFullYear()} Budhiraja Electricals. All rights reserved.</div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-white">Privacy</a>
-            <a href="#" className="hover:text-white">Terms</a>
-            <a href="#" className="hover:text-white">Sitemap</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 export default function Landing() {
   return (
     <div className="bg-white text-[color:var(--color-ink)]">
-      <Navbar />
+      <SiteHeader />
       <main>
         <Hero />
         <About />
@@ -900,7 +608,7 @@ export default function Landing() {
         <Testimonials />
         <Blog />
       </main>
-      <Footer />
+      <SiteFooter />
       <Toaster position="bottom-right" richColors />
 
     </div>

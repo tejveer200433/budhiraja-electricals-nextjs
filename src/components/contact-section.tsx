@@ -3,6 +3,9 @@
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ArrowUpRight, Building2, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
+import { trackEvent } from "@/lib/analytics";
+import { SITE_CONTACT } from "@/lib/site";
+
 const SERVICES = [
   "Electrical Substations",
   "Power Distribution",
@@ -20,11 +23,9 @@ const SERVICES = [
 
 export function ContactSection() {
   const [submitting, setSubmitting] = useState(false);
-  const [notice, setNotice] = useState<{ tone: "success" | "error"; message: string } | null>(null);
+  const [notice, setNotice] = useState<{ tone: "success" | "error"; message: string; fallback?: boolean } | null>(null);
+  const [fallbackHref, setFallbackHref] = useState<string>(SITE_CONTACT.whatsappHref);
   const openedAt = useRef(Date.now());
-  const phoneDisplay = "+91 98115 11737";
-  const phoneHref = "+919811511737";
-  const emailAddress = "info@budhirajaelectricals.com";
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -58,23 +59,66 @@ export function ContactSection() {
 
     setSubmitting(true);
     try {
-      const { supabase } = await import("@/integrations/supabase/client");
-      const enrichedMessage = `${message}\n\nService: ${service}\nProject location: ${location}\nBudget: ${budget || "Not specified"}\nPreferred callback: ${callback || "No preference"}`;
-      const { error } = await supabase.from("leads").insert({
-        name,
-        email,
-        phone,
-        company: company || null,
-        message: enrichedMessage,
+      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+      if (!accessKey || /your_|placeholder/i.test(accessKey)) {
+        throw new Error("Web3Forms access key is not configured.");
+      }
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `New project enquiry from ${name}`,
+          from_name: "Budhiraja Electricals Website",
+          name,
+          email,
+          Phone: phone,
+          Company: company || "Not specified",
+          "Service Required": service,
+          "Project Location": location,
+          "Estimated Budget": budget || "Not specified",
+          "Preferred Callback": callback || "No preference",
+          message,
+          botcheck: false,
+        }),
       });
-      if (error) throw error;
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.message || "Unable to send enquiry.");
+      }
       window.localStorage.setItem("be-last-enquiry", String(Date.now()));
       setNotice({ tone: "success", message: "Thank you. Our team will contact you shortly." });
+      setFallbackHref(SITE_CONTACT.whatsappHref);
+      trackEvent("contact_submission", { service, project_location: location, budget: budget || "not_specified" });
       form.reset();
       openedAt.current = Date.now();
     } catch (error) {
-      console.error("Lead submission failed", error);
-      setNotice({ tone: "error", message: `We could not send the form. Please call ${phoneDisplay}.` });
+      console.error("Enquiry submission failed", error);
+      const configurationMissing = error instanceof Error && error.message === "Web3Forms access key is not configured.";
+      const fallbackMessage = [
+        "Hello Budhiraja Electricals, I would like to discuss a project.",
+        `Name: ${name}`,
+        `Email: ${email}`,
+        `Phone: ${phone}`,
+        `Company: ${company || "Not specified"}`,
+        `Service: ${service}`,
+        `Location: ${location}`,
+        `Budget: ${budget || "Not specified"}`,
+        `Preferred callback: ${callback || "No preference"}`,
+        `Project brief: ${message}`,
+      ].join("\n");
+      setFallbackHref(`${SITE_CONTACT.whatsappHref}?text=${encodeURIComponent(fallbackMessage)}`);
+      setNotice({
+        tone: "error",
+        fallback: true,
+        message: configurationMissing
+          ? "Web3Forms setup is incomplete. Add the access key to .env.local and restart the development server."
+          : "Email delivery is temporarily unavailable. You can send the same enquiry securely through WhatsApp.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -92,13 +136,13 @@ export function ContactSection() {
             Share the project scope and location. The team will respond with the right technical contact.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <a href={`tel:${phoneHref}`} className="btn-primary"><Phone className="h-4 w-4" /> Call {phoneDisplay}</a>
-            <a href="https://wa.me/919811511737" target="_blank" rel="noreferrer" className="btn-ghost"><MessageCircle className="h-4 w-4" /> WhatsApp</a>
+            <a href={`tel:${SITE_CONTACT.phoneHref}`} onClick={() => trackEvent("phone_click", { location: "contact_page" })} className="btn-primary"><Phone className="h-4 w-4" /> Call {SITE_CONTACT.phoneDisplay}</a>
+            <a href={SITE_CONTACT.whatsappHref} target="_blank" rel="noreferrer" onClick={() => trackEvent("whatsapp_click", { location: "contact_page" })} className="btn-ghost"><MessageCircle className="h-4 w-4" /> WhatsApp</a>
           </div>
           <address className="mt-10 space-y-5 not-italic">
-            <ContactItem icon={MapPin} title="Head office">D-112, Panchsheel Enclave, New Delhi - 110017</ContactItem>
-            <ContactItem icon={Building2} title="Branch office">1464/1, Gurudwara Road, Kotla Mubarak Pur, New Delhi - 110013</ContactItem>
-            <ContactItem icon={Mail} title="Email"><a href={`mailto:${emailAddress}`} className="text-[color:var(--color-brand)]">{emailAddress}</a></ContactItem>
+            <ContactItem icon={MapPin} title="Head office">{SITE_CONTACT.headOffice}</ContactItem>
+            <ContactItem icon={Building2} title="Branch office">{SITE_CONTACT.branchOffice}</ContactItem>
+            <ContactItem icon={Mail} title="Email"><a href={`mailto:${SITE_CONTACT.email}`} onClick={() => trackEvent("email_click", { location: "contact_page" })} className="text-[color:var(--color-brand)]">{SITE_CONTACT.email}</a></ContactItem>
           </address>
           <a href="https://www.google.com/maps/search/?api=1&query=D-112%2C%20Panchsheel%20Enclave%2C%20New%20Delhi%20110017" target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-md text-sm font-semibold text-[color:var(--color-brand)]">
             <MapPin className="h-4 w-4" /> Open head office in Google Maps
@@ -107,7 +151,7 @@ export function ContactSection() {
 
         <form onSubmit={onSubmit} className="h-fit rounded-3xl border border-line bg-white p-7 shadow-[var(--shadow-card)] sm:p-10">
           <div className="sr-only" aria-hidden="true"><label>Website<input name="website" type="text" tabIndex={-1} autoComplete="off" /></label></div>
-          {notice && <div role="alert" className={`mb-6 rounded-xl border p-4 text-sm ${notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-red-200 bg-red-50 text-red-900"}`}>{notice.message}</div>}
+          {notice && <div role="alert" className={`mb-6 rounded-xl border p-4 text-sm ${notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-900" : notice.fallback ? "border-amber-200 bg-amber-50 text-amber-950" : "border-red-200 bg-red-50 text-red-900"}`}><div>{notice.message}</div>{notice.fallback && <a href={fallbackHref} target="_blank" rel="noreferrer" onClick={() => trackEvent("whatsapp_click", { location: "form_fallback" })} className="btn-primary mt-3"><MessageCircle className="h-4 w-4" />Send this enquiry on WhatsApp</a>}</div>}
           <div className="grid gap-5 sm:grid-cols-2">
             <ContactField name="name" label="Name" required />
             <ContactField name="email" label="Email" type="email" required />
