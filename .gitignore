@@ -33,6 +33,6 @@ dist-ssr
 
 # Next.js build output
 .next
+*.tsbuildinfo
 # Local environment files
 .env*
-

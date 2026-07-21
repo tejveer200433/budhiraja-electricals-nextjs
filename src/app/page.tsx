@@ -1,12 +1,15 @@
 "use client";
 
+/* eslint-disable @next/next/no-html-link-for-pages */
+
+import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
-  ArrowUpRight, ArrowRight, Zap, Factory, Lightbulb, Shield, Cpu,
-  Cable, LayoutGrid, KeyRound, Car, TreePine, Wrench, Menu, X, Phone, Mail,
-  MapPin, Star, ChevronLeft, ChevronRight, Quote, Award, Users, Globe, Activity,
+  ArrowUpRight, ArrowRight, Zap, Menu, X, Phone, Mail,
+  MapPin, Star, ChevronLeft, ChevronRight, ChevronDown, Quote, Award, Users, Globe, Activity,
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
+import { SERVICES as SERVICE_DATA } from "@/lib/services";
 
 const heroImg = "/images/hero-substation.jpg";
 const aboutImg = "/images/about-team.jpg";
@@ -78,28 +81,15 @@ function Counter({ to, suffix = "", duration = 1800 }: { to: number; suffix?: st
 
 // ---------- data ----------
 const NAV = [
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Projects", href: "#projects" },
-  { label: "Blog", href: "#blog" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Projects", href: "/projects" },
+  { label: "Blog", href: "/blog" },
+  { label: "Testimonials", href: "/testimonials" },
+  { label: "Contact", href: "/contact" },
 ];
 
-const SERVICES = [
-  { icon: Zap, title: "Electrical Substations", desc: "Turnkey 11 / 33 / 66 kV substations — design, supply, testing and commissioning." },
-  { icon: Cable, title: "Power Distribution", desc: "HT & LT distribution networks engineered for reliability at industrial scale." },
-  { icon: Factory, title: "Industrial Electrification", desc: "Complete electrification for plants, factories and manufacturing campuses." },
-  { icon: Lightbulb, title: "Stadium Lighting", desc: "Broadcast-grade floodlighting for cricket, football and multi-sport arenas." },
-  { icon: Shield, title: "Smart Security Solutions", desc: "IP CCTV, intrusion and integrated command centers for critical facilities." },
-  { icon: Cpu, title: "Automation & Controls", desc: "PLC / SCADA, BMS and IoT-driven automation for smart infrastructure." },
-  { icon: LayoutGrid, title: "Bus Trunking Systems", desc: "High-current sandwich bus ducts for high-rise and mission-critical loads." },
-  { icon: Activity, title: "Electrical Panels", desc: "LT, MCC and PCC panels built to IEC and Indian standards." },
-  { icon: KeyRound, title: "Access Control", desc: "Card, biometric and mobile-credential access for enterprise premises." },
-  { icon: Car, title: "Parking Solutions", desc: "Automated parking, guidance and revenue-control systems." },
-  { icon: TreePine, title: "Landscape Lighting", desc: "Architectural lighting for campuses, façades and public realms." },
-  { icon: Wrench, title: "Maintenance Services", desc: "Annual O&M contracts with 24×7 response and SLA-backed uptime." },
-];
+const SERVICES = SERVICE_DATA;
 
 const PROJECTS = [
   { img: pSubstation, tag: "Substations", title: "66 kV Grid Substation", location: "Uttar Pradesh", client: "State Utility", services: "EPC · Testing · Commissioning", year: "2024", span: "row-span-2" },
@@ -111,8 +101,22 @@ const PROJECTS = [
 ];
 
 const CLIENTS = [
-  "NHAI", "NTPC", "PWD", "CPWD", "DDA", "IOCL", "BHEL", "Tata Projects",
-  "L&T", "Adani", "Reliance", "GAIL", "DMRC", "AIIMS", "IIT Delhi", "Sports Authority",
+  { name: "NHAI", img: pInfra },
+  { name: "NTPC", img: pSubstation },
+  { name: "PWD", img: pCommercial },
+  { name: "CPWD", img: pGov },
+  { name: "DDA", img: pStadium },
+  { name: "IOCL", img: pIndustrial },
+  { name: "BHEL", img: pSubstation },
+  { name: "Tata Projects", img: pCommercial },
+  { name: "L&T", img: pIndustrial },
+  { name: "Adani", img: pInfra },
+  { name: "Reliance", img: pGov },
+  { name: "GAIL", img: pStadium },
+  { name: "DMRC", img: pSubstation },
+  { name: "AIIMS", img: pCommercial },
+  { name: "IIT Delhi", img: pIndustrial },
+  { name: "Sports Authority", img: pStadium },
 ];
 
 const TESTIMONIALS = [
@@ -138,7 +142,7 @@ function Navbar() {
       }`}
     >
       <div className="container-x flex h-20 items-center justify-between">
-        <a href="#top" className="flex items-center gap-2.5">
+        <a href="/" className="flex items-center gap-2.5">
           <span className="grid h-9 w-9 place-items-center rounded-md bg-[color:var(--color-brand)] text-white">
             <Zap className="h-5 w-5" strokeWidth={2.5} />
           </span>
@@ -150,16 +154,16 @@ function Navbar() {
 
         <nav className="hidden lg:flex items-center gap-8">
           {NAV.map((n) => (
-            <a key={n.href} href={n.href} className="text-[13px] font-semibold text-[color:var(--color-ink-2)] hover:text-[color:var(--color-brand)] transition-colors">
+            <Link key={n.href} href={n.href} className="text-[13px] font-semibold text-[color:var(--color-ink-2)] hover:text-[color:var(--color-brand)] transition-colors">
               {n.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-3">
-          <a href="#contact" className="hidden sm:inline-flex btn-yellow">
+          <Link href="/contact" className="hidden sm:inline-flex btn-yellow">
             Get a Quote <ArrowUpRight className="h-4 w-4" />
-          </a>
+          </Link>
           <button
             aria-label="Toggle menu"
             className="lg:hidden grid h-10 w-10 place-items-center rounded-full border border-line"
@@ -174,9 +178,9 @@ function Navbar() {
         <div className="lg:hidden border-t border-line bg-white">
           <div className="container-x flex flex-col py-4">
             {NAV.map((n) => (
-              <a key={n.href} href={n.href} onClick={() => setOpen(false)} className="py-3 text-sm font-semibold border-b border-line last:border-0">
+              <Link key={n.href} href={n.href} onClick={() => setOpen(false)} className="py-3 text-sm font-semibold border-b border-line last:border-0">
                 {n.label}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -187,7 +191,7 @@ function Navbar() {
 
 function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden pt-32 pb-20 md:pt-40 md:pb-28">
+    <section id="top" className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-40">
       {/* soft grid backdrop */}
       <div
         aria-hidden
@@ -221,7 +225,7 @@ function Hero() {
           </p>
 
           <div className="mt-10 flex flex-wrap gap-3">
-            <a href="#services" className="btn-primary">Explore Services <ArrowRight className="h-4 w-4" /></a>
+            <Link href="/services" className="btn-primary">Explore Services <ArrowRight className="h-4 w-4" /></Link>
             <a href="#projects" className="btn-ghost">View Projects</a>
           </div>
 
@@ -344,7 +348,7 @@ function About() {
             ))}
           </ul>
 
-          <a href="#projects" className="mt-10 inline-flex btn-primary">Learn More <ArrowUpRight className="h-4 w-4" /></a>
+          <Link href="/projects" className="mt-10 inline-flex btn-primary">Learn More <ArrowUpRight className="h-4 w-4" /></Link>
         </div>
       </div>
     </section>
@@ -374,9 +378,7 @@ function Services() {
             return (
               <div
                 key={s.title}
-                className={`group relative bg-white p-7 md:p-8 transition-colors duration-300 hover:bg-[color:var(--color-ink)] hover:text-white ${
-                  i % 3 === 0 ? "" : ""
-                }`}
+                className="group relative bg-white p-7 md:p-8 transition-colors duration-300 hover:bg-[color:var(--color-ink)] hover:text-white"
                 style={{
                   gridColumn: "span 1",
                 }}
@@ -393,9 +395,13 @@ function Services() {
                 <p className="mt-3 text-sm leading-relaxed text-[color:var(--color-mute)] group-hover:text-white/70">
                   {s.desc}
                 </p>
-                <div className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em]">
-                  Read More <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
+                <Link
+                  href={`/services/${s.slug}`}
+                  className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--color-brand)] transition-colors hover:text-[color:var(--color-brand-600)]"
+                >
+                  Read More
+                  <ChevronDown className="h-3.5 w-3.5 transition-transform" />
+                </Link>
               </div>
             );
           })}
@@ -545,9 +551,9 @@ function Clients() {
       </div>
       <div className="relative">
         <div className="flex w-max animate-[marquee_45s_linear_infinite] gap-14 px-8">
-          {row.map((c, i) => (
-            <div key={i} className="font-display text-2xl md:text-3xl font-bold tracking-tight text-[color:var(--color-mute)]/70 hover:text-[color:var(--color-ink)] transition-colors whitespace-nowrap">
-              {c}
+          {row.map((client, index) => (
+            <div key={index} className="font-display text-2xl md:text-3xl font-bold tracking-tight text-[color:var(--color-mute)]/70 hover:text-[color:var(--color-ink)] transition-colors whitespace-nowrap">
+              {client.name}
             </div>
           ))}
         </div>
@@ -669,14 +675,21 @@ function Contact() {
     }
     setSubmitting(true);
     try {
-      const { supabase } = await import("@/integrations/supabase/client");
-      const { error } = await supabase.from("leads").insert(payload);
-      if (error) throw error;
-      toast.success("Thanks! Our team will get back to you within 24 hours.");
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        throw new Error(errorBody?.error || "Unable to send message.");
+      }
+      toast.success("Message sent successfully. We will be in touch soon.");
       form.reset();
     } catch (err) {
-      console.error("Lead submission failed", err);
-      toast.error("Something went wrong. Please try again or email us directly.");
+      console.error("Contact submission failed", err);
+      const message = err instanceof Error ? err.message : "Unable to send message. Please try again later.";
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -695,9 +708,9 @@ function Contact() {
 
           <ul className="mt-10 space-y-5">
             {[
-              { i: Phone, k: "Call Us", v: "+91 11 4XXX XXXX" },
-              { i: Mail, k: "Email", v: "projects@budhirajaelectricals.com" },
-              { i: MapPin, k: "Head Office", v: "New Delhi, India" },
+              { i: Phone, k: "Call Us", v: "+91 11 4567 8901" },
+              { i: Mail, k: "Email", v: "tejveer.singh_cs22@gla.ac.in" },
+              { i: MapPin, k: "Head Office", v: "B-84, Okhla Industrial Estate, Phase II, New Delhi 110020" },
             ].map((c) => {
               const I = c.i;
               return (
@@ -714,13 +727,19 @@ function Contact() {
             })}
           </ul>
 
-          <div className="mt-10 overflow-hidden rounded-2xl border border-line">
+          <div className="relative mt-10 overflow-hidden rounded-2xl border border-line">
             <iframe
               title="Office location"
-              src="https://www.google.com/maps?q=New+Delhi&output=embed"
-              className="h-64 w-full"
+              src="https://www.google.com/maps?q=B-84+Okhla+Industrial+Estate+Phase+II+New+Delhi+110020&output=embed"
+              className="h-64 w-full pointer-events-none"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
+            />
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=B-84+Okhla+Industrial+Estate+Phase+II+New+Delhi+110020"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="absolute inset-0 z-10"
             />
           </div>
         </div>
@@ -784,8 +803,8 @@ function Footer() {
           </div>
 
           {[
-            { h: "Company", l: [["About", "#about"], ["Projects", "#projects"], ["Blog", "#blog"], ["Contact", "#contact"]] },
-            { h: "Services", l: [["Substations", "#services"], ["Distribution", "#services"], ["Stadium Lighting", "#services"], ["Automation", "#services"]] },
+            { h: "Company", l: [["About", "/about"], ["Projects", "/projects"], ["Blog", "/blog"], ["Contact", "/contact"]] },
+            { h: "Services", l: [["Substations", "/services"], ["Distribution", "/services"], ["Stadium Lighting", "/services"], ["Automation", "/services"]] },
             { h: "Connect", l: [["LinkedIn", "#"], ["Twitter", "#"], ["Instagram", "#"], ["YouTube", "#"]] },
           ].map((col) => (
             <div key={col.h}>
@@ -818,14 +837,8 @@ export default function Landing() {
       <Navbar />
       <main>
         <Hero />
-        <About />
-        <Services />
-        <Projects />
         <WhyUs />
         <Clients />
-        <Testimonials />
-        <Blog />
-        <Contact />
       </main>
       <Footer />
       <Toaster position="bottom-right" richColors />
